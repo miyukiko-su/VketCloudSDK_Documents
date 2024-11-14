@@ -1,0 +1,28 @@
+name: synchronize-coze-knowledge
+
+on:
+#  push:
+#    branches: [ "master" ]
+  workflow_dispatch:
+
+env:
+  BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
+  REPOSITORY_NAME: ${{ github.repository }}
+  REPOSITORY_OWNER: ${{ github.repository_owner }}
+  COZE_OAUTH_APP_ID: ${{ secrets.COZE_OAUTH_APP_ID }}
+  COZE_PRIVATE_KEY: ${{ secrets.COZE_PRIVATE_KEY }}
+  COZE_PUBLIC_KEY: ${{ secrets.COZE_PUBLIC_KEY }}
+  COZE_KNOWLEDGE_ID: ${{ secrets.COZE_KNOWLEDGE_ID }}
+
+jobs:
+  synchronization:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Perform synchronization process
+        run: |
+          pip install cozepy==0.6.2
+          python ./.github/workflows/sync.py
